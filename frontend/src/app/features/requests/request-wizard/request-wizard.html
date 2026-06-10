@@ -36,7 +36,7 @@
       @case (1) {
         <fieldset formGroupName="step1" class="step-pane">
           <label>
-            Titel <span aria-hidden="true">*</span>
+            <span class="label-text">Titel <span aria-hidden="true">*</span></span>
             <input
               type="text"
               formControlName="title"
@@ -50,7 +50,7 @@
             }
           </label>
           <label>
-            Kategorie <span aria-hidden="true">*</span>
+            <span class="label-text">Kategorie <span aria-hidden="true">*</span></span>
             <select formControlName="category" required>
               @for (category of categories; track category) {
                 <option [value]="category">{{ categoryLabels[category] }}</option>
@@ -62,7 +62,7 @@
       @case (2) {
         <fieldset formGroupName="step2" class="step-pane">
           <label>
-            Beschreibung <span aria-hidden="true">*</span>
+            <span class="label-text">Beschreibung <span aria-hidden="true">*</span></span>
             <small id="description-hint" class="field-hint">Was wird beantragt und warum? Mindestens 10 Zeichen.</small>
             <textarea
               rows="5"
@@ -113,11 +113,11 @@
     }
 
     <div class="nav">
+      <button type="button" class="ghost" (click)="cancel()" [disabled]="saving()">Abbrechen</button>
+      <span class="spacer"></span>
       @if (currentStep() > 1) {
         <button type="button" (click)="prevStep()" [disabled]="saving()">Zurück</button>
       }
-      <span class="spacer"></span>
-      <button type="button" class="ghost" (click)="cancel()" [disabled]="saving()">Abbrechen</button>
       @if (currentStep() < 3) {
         <button type="submit" class="primary">Weiter</button>
       } @else {

@@ -90,6 +90,10 @@
   }
 }
 
+.label-text {
+  display: inline; /* keep label text and the * marker on one line */
+}
+
 .hint,
 .field-hint {
   font-size: 13px;

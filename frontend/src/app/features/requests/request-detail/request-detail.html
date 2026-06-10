@@ -12,6 +12,8 @@
     </header>
 
     <dl>
+      <dt>Vorgang</dt>
+      <dd class="mono">{{ shortId(r.id) }}</dd>
       <dt>Kategorie</dt>
       <dd>{{ categoryLabels[r.payload.category] }}</dd>
       <dt>Beschreibung</dt>
@@ -36,7 +38,6 @@
         <button type="button" class="primary" (click)="submit()">Einreichen</button>
       </div>
     }
-    <p class="file-number mono">Vorgang {{ shortId(r.id) }}</p>
   } @else {
     <p role="status">Lade …</p>
   }
