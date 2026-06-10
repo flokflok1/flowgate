@@ -26,8 +26,9 @@ export class RequestList implements OnInit {
     this.requestsService.reload();
   }
 
-  protected open(id: string): void {
-    void this.router.navigate(['/requests', id]);
+  /** short, file-number style reference derived from the uuid (e.g. FG-3F2A) */
+  protected shortId(id: string): string {
+    return `FG-${id.slice(0, 4).toUpperCase()}`;
   }
 
   protected logout(): void {

@@ -1,12 +1,12 @@
 <main class="detail">
-  <a routerLink="/">‹ Zurück zur Liste</a>
+  <a class="back" routerLink="/"><span aria-hidden="true">‹</span> Zurück zur Liste</a>
 
   @if (error(); as msg) {
     <p class="error" role="alert">{{ msg }}</p>
   } @else if (request(); as r) {
     <header>
       <h1>{{ r.title }}</h1>
-      <span class="badge" [class]="'badge status-' + r.status">
+      <span class="badge stamp" [class]="'badge stamp status-' + r.status">
         {{ statusLabels[r.status] }}
       </span>
     </header>
@@ -36,7 +36,8 @@
         <button type="button" class="primary" (click)="submit()">Einreichen</button>
       </div>
     }
+    <p class="file-number mono">Vorgang {{ shortId(r.id) }}</p>
   } @else {
-    <p>Lade …</p>
+    <p role="status">Lade …</p>
   }
 </main>

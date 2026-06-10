@@ -1,5 +1,5 @@
 <header class="topbar">
-  <h1>FlowGate</h1>
+  <span class="wordmark">FlowGate</span>
   @if (auth.currentUser(); as user) {
     <span class="who">{{ user.email }} · {{ user.role }}</span>
   }
@@ -8,40 +8,57 @@
 
 <main>
   <div class="actions">
-    <h2>Anträge</h2>
+    <h1>Anträge</h1>
     @if (auth.currentUser()?.role === 'requester') {
-      <a class="primary" routerLink="/requests/new">+ Neuer Antrag</a>
+      <a class="button primary" routerLink="/requests/new">
+        <span aria-hidden="true">+</span> Neuer Antrag
+      </a>
     }
   </div>
 
   @if (requestsService.loading()) {
-    <p>Lade …</p>
+    <p role="status">Lade …</p>
   } @else if (requestsService.requests().length === 0) {
-    <p class="empty">Noch keine Anträge vorhanden.</p>
+    <div class="empty-state">
+      <p class="empty-title">Kein Vorgang angelegt</p>
+      <p>Sobald Anträge existieren, erscheinen sie hier.</p>
+      @if (auth.currentUser()?.role === 'requester') {
+        <a class="button primary" routerLink="/requests/new">Ersten Antrag stellen</a>
+      }
+    </div>
   } @else {
-    <table>
-      <thead>
-        <tr>
-          <th>Titel</th>
-          <th>Kategorie</th>
-          <th>Status</th>
-          <th>Aktualisiert</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (request of requestsService.requests(); track request.id) {
-          <tr (click)="open(request.id)">
-            <td>{{ request.title }}</td>
-            <td>{{ categoryLabels[request.payload.category] }}</td>
-            <td>
-              <span class="badge" [class]="'badge status-' + request.status">
-                {{ statusLabels[request.status] }}
-              </span>
-            </td>
-            <td>{{ request.updatedAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+    <div class="card">
+      <table>
+        <caption class="visually-hidden">Liste der Anträge mit Status</caption>
+        <thead>
+          <tr>
+            <th scope="col">Vorgang</th>
+            <th scope="col">Titel</th>
+            <th scope="col">Kategorie</th>
+            <th scope="col">Status</th>
+            <th scope="col">Aktualisiert</th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (request of requestsService.requests(); track request.id) {
+            <tr>
+              <td class="mono">{{ shortId(request.id) }}</td>
+              <td>
+                <a class="row-link" [routerLink]="['/requests', request.id]">
+                  {{ request.title }}
+                </a>
+              </td>
+              <td class="muted">{{ categoryLabels[request.payload.category] }}</td>
+              <td>
+                <span class="badge" [class]="'badge status-' + request.status">
+                  {{ statusLabels[request.status] }}
+                </span>
+              </td>
+              <td class="mono muted">{{ request.updatedAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   }
 </main>

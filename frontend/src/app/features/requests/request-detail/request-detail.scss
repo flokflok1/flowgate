@@ -1,11 +1,16 @@
 .detail {
-  max-width: 40rem;
-  margin: 2rem auto;
+  max-width: 42rem;
+  margin: 2.5rem auto;
   padding: 0 1.5rem;
+}
 
-  > a {
-    color: #1a73e8;
-    text-decoration: none;
+.back {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 14px;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 
@@ -13,21 +18,38 @@ header {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin: 1rem 0;
+  margin: 1.25rem 0;
 
   h1 {
     margin: 0;
-    font-size: 1.4rem;
+    font-size: 24px;
+  }
+}
+
+/* the badge "stamps" onto the page — detail view only */
+.stamp {
+  animation: stamp 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes stamp {
+  from {
+    opacity: 0;
+    transform: scale(1.3) rotate(-2deg);
   }
 }
 
 dl {
   display: grid;
   grid-template-columns: 10rem 1fr;
-  gap: 0.5rem 1rem;
+  gap: 0.6rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.25rem;
 
   dt {
-    color: #777;
+    color: var(--ink-muted);
+    font-size: 13px;
   }
 
   dd {
@@ -35,55 +57,14 @@ dl {
   }
 }
 
-.badge {
-  padding: 0.15rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  background: #eee;
-
-  &.status-draft {
-    background: #e0e0e0;
-  }
-  &.status-submitted {
-    background: #d2e3fc;
-  }
-  &.status-in_review {
-    background: #feefc3;
-  }
-  &.status-approved {
-    background: #ceead6;
-  }
-  &.status-rejected {
-    background: #fad2cf;
-  }
-  &.status-changes_requested {
-    background: #fde2c8;
-  }
-}
-
 .actions {
   display: flex;
   gap: 0.75rem;
-  margin-top: 2rem;
-
-  .button,
-  button {
-    padding: 0.55rem 1.1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: #fff;
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-
-    &.primary {
-      background: #1a73e8;
-      border-color: #1a73e8;
-      color: #fff;
-    }
-  }
+  margin-top: 1.5rem;
 }
 
-.error {
-  color: #c5221f;
+.file-number {
+  margin-top: 2rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.05em;
 }

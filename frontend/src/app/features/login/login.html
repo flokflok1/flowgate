@@ -1,19 +1,62 @@
-<form class="login-card" [formGroup]="form" (ngSubmit)="submit()">
-  <h1>FlowGate Login</h1>
+<div class="login-page">
+  <aside class="brand-panel">
+    <div class="brand">
+      <h1 class="wordmark">FlowGate</h1>
+      <p class="tagline">Anträge. Prüfung. Freigabe.</p>
+      <p class="pipeline" aria-hidden="true">DRAFT ▸ SUBMITTED ▸ IN REVIEW ▸ APPROVED</p>
+    </div>
+    <p class="footnote">SELF-BUILT DEMO · REFERENCE PROJECT</p>
+  </aside>
 
-  <label>
-    E-Mail
-    <input type="email" formControlName="email" autocomplete="username" />
-  </label>
+  <main class="form-panel">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <h2>Anmelden</h2>
 
-  <label>
-    Passwort
-    <input type="password" formControlName="password" autocomplete="current-password" />
-  </label>
+      <label>
+        E-Mail
+        <input
+          type="email"
+          formControlName="email"
+          autocomplete="username"
+          required
+          [attr.aria-invalid]="form.controls.email.touched && form.controls.email.invalid ? true : null"
+          [attr.aria-describedby]="form.controls.email.touched && form.controls.email.invalid ? 'email-error' : null"
+        />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <small id="email-error" class="error">Bitte eine gültige E-Mail-Adresse eingeben.</small>
+        }
+      </label>
 
-  @if (error(); as msg) {
-    <p class="error" role="alert">{{ msg }}</p>
-  }
+      <label>
+        Passwort
+        <input
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          required
+          [attr.aria-invalid]="form.controls.password.touched && form.controls.password.invalid ? true : null"
+          [attr.aria-describedby]="form.controls.password.touched && form.controls.password.invalid ? 'password-error' : null"
+        />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <small id="password-error" class="error">Das Passwort hat mindestens 8 Zeichen.</small>
+        }
+      </label>
 
-  <button type="submit" [disabled]="form.invalid">Anmelden</button>
-</form>
+      @if (error(); as msg) {
+        <p class="error" role="alert">{{ msg }}</p>
+      }
+
+      <button type="submit" class="primary" [disabled]="loading()">
+        {{ loading() ? 'Anmelden …' : 'Anmelden' }}
+      </button>
+
+      <div class="demo-hint">
+        <strong>Demo-Zugänge</strong> (Passwort jeweils <code>Demo1234!</code>)
+        <ul>
+          <li><code>requester&#64;flowgate.demo</code> — stellt Anträge</li>
+          <li><code>reviewer&#64;flowgate.demo</code> — prüft &amp; entscheidet</li>
+        </ul>
+      </div>
+    </form>
+  </main>
+</div>

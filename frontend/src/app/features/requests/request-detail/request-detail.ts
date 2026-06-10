@@ -48,6 +48,10 @@ export class RequestDetail implements OnInit {
     });
   }
 
+  protected shortId(id: string): string {
+    return `FG-${id.slice(0, 4).toUpperCase()}`;
+  }
+
   protected submit(): void {
     const current = this.request();
     if (!current) return;

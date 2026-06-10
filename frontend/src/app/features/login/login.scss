@@ -1,42 +1,122 @@
-.login-card {
-  max-width: 22rem;
-  margin: 10vh auto 0;
+.login-page {
+  display: grid;
+  grid-template-columns: minmax(360px, 42%) 1fr;
+  min-height: 100vh;
+}
+
+.brand-panel {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 2rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  justify-content: space-between;
+  padding: 3rem;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.05) 0,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px,
+      transparent 32px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 0,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px,
+      transparent 32px
+    ),
+    var(--brand-dark);
+  color: var(--paper);
 
-  label {
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--paper);
+  }
+
+  .tagline {
+    margin: 0.5rem 0 0;
+    font-size: 15px;
+    color: rgba(247, 246, 242, 0.75);
+  }
+
+  .pipeline {
+    margin-top: 2.5rem;
+    font: 600 12px/1 var(--font-mono);
+    letter-spacing: 0.08em;
+    color: rgba(247, 246, 242, 0.45);
+  }
+
+  .footnote {
+    margin: 0;
+    font: 400 12px/1 var(--font-mono);
+    letter-spacing: 0.06em;
+    color: rgba(247, 246, 242, 0.45);
+  }
+}
+
+.form-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+
+  form {
+    width: 100%;
+    max-width: 360px;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.9rem;
-  }
+    gap: 1.1rem;
 
-  input {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  button {
-    padding: 0.6rem;
-    border: none;
-    border-radius: 4px;
-    background: #1a73e8;
-    color: #fff;
-    cursor: pointer;
-
-    &:disabled {
-      background: #9bb9e8;
-      cursor: not-allowed;
+    h2 {
+      font-size: 24px;
+      margin: 0 0 0.5rem;
     }
   }
+}
 
-  .error {
-    color: #c5221f;
-    margin: 0;
+.demo-hint {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: 5px;
+  font-size: 13px;
+  color: var(--ink-muted);
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  ul {
+    margin: 0.4rem 0 0;
+    padding-left: 1.1rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-panel {
+    flex-direction: row;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+
+    .pipeline,
+    .footnote {
+      display: none;
+    }
+
+    .wordmark {
+      font-size: 22px;
+    }
+
+    .tagline {
+      display: none;
+    }
   }
 }

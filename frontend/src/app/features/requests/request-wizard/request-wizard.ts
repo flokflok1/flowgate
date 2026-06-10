@@ -1,4 +1,12 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -32,6 +40,9 @@ export class RequestWizard implements OnInit {
   protected readonly currentStep = signal(1);
   protected readonly error = signal<string | null>(null);
   protected readonly saving = signal(false);
+  protected readonly stepTitles = ['Grunddaten', 'Details', 'Prüfen & Absenden'];
+  private readonly stepHeading =
+    viewChild<ElementRef<HTMLElement>>('stepHeading');
 
   /** id of the draft being edited — null when creating a new request */
   private editId: string | null = null;
@@ -77,10 +88,25 @@ export class RequestWizard implements OnInit {
       return;
     }
     this.currentStep.update((step) => Math.min(step + 1, 3));
+    this.focusStepHeading();
   }
 
   protected prevStep(): void {
     this.currentStep.update((step) => Math.max(step - 1, 1));
+    this.focusStepHeading();
+  }
+
+  protected onEnter(): void {
+    if (this.currentStep() < 3) {
+      this.nextStep();
+    } else {
+      this.submitRequest();
+    }
+  }
+
+  /** move focus to the step heading so screen readers announce the change */
+  private focusStepHeading(): void {
+    setTimeout(() => this.stepHeading()?.nativeElement.focus());
   }
 
   protected cancel(): void {

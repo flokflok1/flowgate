@@ -2,25 +2,56 @@
   <h1>{{ isEdit() ? 'Antrag bearbeiten' : 'Neuer Antrag' }}</h1>
 
   <ol class="steps">
-    <li [class.active]="currentStep() === 1" [class.done]="currentStep() > 1">Grunddaten</li>
-    <li [class.active]="currentStep() === 2" [class.done]="currentStep() > 2">Details</li>
-    <li [class.active]="currentStep() === 3">Prüfen &amp; Absenden</li>
+    @for (title of stepTitles; track title; let index = $index) {
+      <li
+        [class.active]="currentStep() === index + 1"
+        [class.done]="currentStep() > index + 1"
+        [attr.aria-current]="currentStep() === index + 1 ? 'step' : null"
+      >
+        <span class="circle" aria-hidden="true">
+          @if (currentStep() > index + 1) {
+            <span class="check"></span>
+          } @else {
+            {{ index + 1 }}
+          }
+        </span>
+        <span class="step-label">{{ title }}</span>
+        @if (currentStep() > index + 1) {
+          <span class="visually-hidden">(erledigt)</span>
+        }
+      </li>
+    }
   </ol>
 
-  <form [formGroup]="form">
+  <h2 #stepHeading tabindex="-1" class="step-heading">
+    Schritt {{ currentStep() }} von 3: {{ stepTitles[currentStep() - 1] }}
+  </h2>
+
+  @if (currentStep() === 1) {
+    <p class="hint">Felder mit <span aria-hidden="true">*</span> Stern sind Pflichtfelder.</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onEnter()">
     @switch (currentStep()) {
       @case (1) {
-        <fieldset formGroupName="step1">
+        <fieldset formGroupName="step1" class="step-pane">
           <label>
-            Titel *
-            <input type="text" formControlName="title" placeholder="z.B. Neue Tastatur" />
+            Titel <span aria-hidden="true">*</span>
+            <input
+              type="text"
+              formControlName="title"
+              placeholder="z.B. Neue Tastatur"
+              required
+              [attr.aria-invalid]="form.controls.step1.controls.title.touched && form.controls.step1.controls.title.invalid ? true : null"
+              [attr.aria-describedby]="form.controls.step1.controls.title.touched && form.controls.step1.controls.title.invalid ? 'title-error' : null"
+            />
             @if (form.controls.step1.controls.title.touched && form.controls.step1.controls.title.invalid) {
-              <small class="error">Bitte einen Titel mit mindestens 3 Zeichen angeben.</small>
+              <small id="title-error" class="error">Bitte einen Titel mit mindestens 3 Zeichen angeben.</small>
             }
           </label>
           <label>
-            Kategorie *
-            <select formControlName="category">
+            Kategorie <span aria-hidden="true">*</span>
+            <select formControlName="category" required>
               @for (category of categories; track category) {
                 <option [value]="category">{{ categoryLabels[category] }}</option>
               }
@@ -29,12 +60,19 @@
         </fieldset>
       }
       @case (2) {
-        <fieldset formGroupName="step2">
+        <fieldset formGroupName="step2" class="step-pane">
           <label>
-            Beschreibung *
-            <textarea rows="5" formControlName="description" placeholder="Was wird beantragt und warum? (mind. 10 Zeichen)"></textarea>
+            Beschreibung <span aria-hidden="true">*</span>
+            <small id="description-hint" class="field-hint">Was wird beantragt und warum? Mindestens 10 Zeichen.</small>
+            <textarea
+              rows="5"
+              formControlName="description"
+              required
+              aria-describedby="description-hint"
+              [attr.aria-invalid]="form.controls.step2.controls.description.touched && form.controls.step2.controls.description.invalid ? true : null"
+            ></textarea>
             @if (form.controls.step2.controls.description.touched && form.controls.step2.controls.description.invalid) {
-              <small class="error">Bitte mindestens 10 Zeichen Beschreibung.</small>
+              <small id="description-error" class="error">Bitte mindestens 10 Zeichen Beschreibung.</small>
             }
           </label>
           <label>
@@ -48,7 +86,7 @@
         </fieldset>
       }
       @case (3) {
-        <dl class="summary">
+        <dl class="summary step-pane">
           <dt>Titel</dt>
           <dd>{{ form.getRawValue().step1.title }}</dd>
           <dt>Kategorie</dt>
@@ -57,32 +95,35 @@
           <dd>{{ form.getRawValue().step2.description }}</dd>
           @if (form.getRawValue().step2.amountEur; as amount) {
             <dt>Betrag</dt>
-            <dd>{{ amount }} €</dd>
+            <dd class="mono">{{ amount }} €</dd>
           }
           @if (form.getRawValue().step2.neededBy; as date) {
             <dt>Benötigt bis</dt>
-            <dd>{{ date }}</dd>
+            <dd class="mono">{{ date }}</dd>
           }
         </dl>
       }
     }
+
+    @if (error(); as msg) {
+      <p class="error" role="alert">{{ msg }}</p>
+    }
+    @if (saving()) {
+      <p role="status" class="field-hint">Wird gespeichert …</p>
+    }
+
+    <div class="nav">
+      @if (currentStep() > 1) {
+        <button type="button" (click)="prevStep()" [disabled]="saving()">Zurück</button>
+      }
+      <span class="spacer"></span>
+      <button type="button" class="ghost" (click)="cancel()" [disabled]="saving()">Abbrechen</button>
+      @if (currentStep() < 3) {
+        <button type="submit" class="primary">Weiter</button>
+      } @else {
+        <button type="button" (click)="saveDraft()" [disabled]="saving()">Als Entwurf speichern</button>
+        <button type="submit" class="primary" [disabled]="saving()">Einreichen</button>
+      }
+    </div>
   </form>
-
-  @if (error(); as msg) {
-    <p class="error" role="alert">{{ msg }}</p>
-  }
-
-  <div class="nav">
-    @if (currentStep() > 1) {
-      <button type="button" (click)="prevStep()" [disabled]="saving()">Zurück</button>
-    }
-    <span class="spacer"></span>
-    <button type="button" class="ghost" (click)="cancel()" [disabled]="saving()">Abbrechen</button>
-    @if (currentStep() < 3) {
-      <button type="button" class="primary" (click)="nextStep()">Weiter</button>
-    } @else {
-      <button type="button" (click)="saveDraft()" [disabled]="saving()">Als Entwurf speichern</button>
-      <button type="button" class="primary" (click)="submitRequest()" [disabled]="saving()">Einreichen</button>
-    }
-  </div>
 </main>
