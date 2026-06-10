@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { LoginUseCase } from './application/login.use-case';
-import { AuthController } from './auth.controller';
+import { AuthController } from './application/auth.controller';
 
 @Module({
   imports: [
