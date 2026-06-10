@@ -1,7 +1,15 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
+import { RealtimeService } from '../../../core/realtime/realtime.service';
 import {
   CATEGORY_LABELS,
   RequestStatus,
@@ -18,7 +26,15 @@ import { RequestsService } from '../../../core/requests/requests.service';
 export class RequestList implements OnInit {
   protected readonly auth = inject(AuthService);
   protected readonly requestsService = inject(RequestsService);
+  private readonly realtime = inject(RealtimeService);
   private readonly router = inject(Router);
+
+  constructor() {
+    // live updates: any status change reloads the list
+    effect(() => {
+      if (this.realtime.lastEvent()) this.requestsService.reload();
+    });
+  }
 
   protected readonly categoryLabels = CATEGORY_LABELS;
   protected readonly statusLabels = STATUS_LABELS;

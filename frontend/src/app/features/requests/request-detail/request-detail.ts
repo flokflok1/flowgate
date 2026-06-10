@@ -1,5 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -7,6 +14,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
+import { RealtimeService } from '../../../core/realtime/realtime.service';
 import {
   ACTION_LABELS,
   CATEGORY_LABELS,
@@ -26,9 +34,21 @@ import { RequestsService } from '../../../core/requests/requests.service';
 export class RequestDetail implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly requests = inject(RequestsService);
+  private readonly realtime = inject(RealtimeService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(NonNullableFormBuilder);
+
+  constructor() {
+    // live updates: refresh status + timeline when THIS request changes elsewhere
+    effect(() => {
+      const event = this.realtime.lastEvent();
+      const current = this.request();
+      if (event && current && event.requestId === current.id) {
+        this.load(current.id);
+      }
+    });
+  }
 
   protected readonly categoryLabels = CATEGORY_LABELS;
   protected readonly statusLabels = STATUS_LABELS;
