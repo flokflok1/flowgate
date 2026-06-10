@@ -1,7 +1,7 @@
 # FlowGate Phase 4: Status-Maschine + Review + Audit-Trail Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-> **STATUS: BESTÄTIGT (10.06.2026)** — alle 4 Entscheidungen ok; Lern-Stelle: Pascal schreibt die Übergangs-Prüfung (`transitionTo`) in der Entity.
+> **STATUS: ✅ ABGESCHLOSSEN (10.06.2026)** — Unit 19/19, e2e 18/18, Chrome-Review-Zyklus 10/10 (create→submit→review→changes→resubmit→approve, Timeline 7 Einträge, Filter-Chips). Lern-Stelle transitionTo: von Pascal begonnen, auf seinen Wunsch (keine Zeit) von Claude fertiggestellt.
 
 **Goal:** Reviewer können Anträge prüfen und entscheiden (genehmigen / ablehnen / Änderungen erbitten — mit Kommentar), alle Übergänge werden **serverseitig erzwungen** und **append-only auditiert**; Requester können nach „Änderungen erbeten" nachbessern und neu einreichen. Frontend: Review-Aktionen + Verlaufs-Timeline in der Detailansicht, Status-Filter in der Liste.
 
