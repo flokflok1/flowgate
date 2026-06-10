@@ -15,11 +15,20 @@ Ein **eigenständiges Portfolio-/Referenzprojekt**, um die im deutschen Freelanc
 
 ## Stack (= der nachgefragte Stack)
 - **Frontend:** Angular (aktuell, standalone components, Signals, Reactive Forms, RxJS, Angular Router, HttpClient)
-- **Backend:** NestJS (TypeScript, modular/DDD-leicht) + TypeORM
+- **Backend:** NestJS (TypeScript) + TypeORM — **Domain-Driven Design** (siehe Architektur-Regel unten)
 - **DB:** PostgreSQL
 - **Echtzeit:** WebSocket (NestJS Gateway ↔ Angular)
 - **Auth:** JWT (+ Rollen: requester / reviewer / admin)
 - **Stretch:** Redis (Sessions/Cache) · BullMQ (async Notifications) · Docker · e2e-Tests
+
+## Backend-Architektur (DDD — verbindlich)
+- **Bounded Contexts als Module:** `auth` · `users` · `requests` · `events` (Realtime). Cross-Modul **nur über Domain-Events** (EventEmitter2), keine direkten Modul-Imports.
+- **Schichtung je Modul (DDD-Layering):**
+  - `application/` — Use-Cases (Commands/Queries), DTOs, Orchestrierung
+  - `domain/` — Entities, Value-Objects, Domain-Events, **Repository-Interfaces** · **framework-frei** (kein `@nestjs/*`/TypeORM-Import!)
+  - `infrastructure/` — TypeORM-Repository-Implementierungen, externe Adapter
+- **Repository-Pattern:** Interface in `domain/`, Implementierung in `infrastructure/`. Dependency-Richtung zeigt nach innen (Infrastructure → Application → Domain).
+- **Proportional:** sauber & lehrbuch-nah, aber **nicht über-engineered** — die Struktur soll Architektur-Kompetenz zeigen, ohne die kleine App zu erschlagen.
 
 ## Owner / Arbeitsweise
 - **Pascal Kozlowski** — Quereinsteiger, FISI-Abschluss 07/2026, starke Backend-/Infra-Skills (NestJS, PostgreSQL, Proxmox), **lernt Angular gerade** (mit Claude Code). Ziel: Freelance.

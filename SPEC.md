@@ -41,9 +41,36 @@ flowgate/
 ├── README.md           # öffentlich (Portfolio)
 ├── docker-compose.yml  # dev: PostgreSQL (+ Redis stretch)
 ├── frontend/           # Angular (standalone, routing, signals)
-└── backend/            # NestJS (auth/users/requests/events) + TypeORM
+├── backend/            # NestJS (Bounded Contexts, DDD-Layering) + TypeORM
 └── docs/               # Case-Study + Architektur-Bild (fürs Portfolio)
 ```
+
+## 4a. Backend-Architektur (DDD — verbindlich)
+**Bounded Contexts als Module:** `auth` · `users` · `requests` · `events` (Realtime).
+Cross-Modul-Kommunikation **nur über Domain-Events** (EventEmitter2) — keine direkten Modul-Imports.
+
+**Schichtung je Modul** (Dependency-Richtung zeigt nach innen: Infrastructure → Application → Domain):
+```
+backend/src/
+├── <context>/                  # z.B. requests/
+│   ├── application/            # Use-Cases (Commands/Queries), DTOs, Orchestrierung
+│   ├── domain/                 # Entities, Value-Objects, Domain-Events,
+│   │   │                       #   Repository-INTERFACES — framework-frei!
+│   │   │                       #   (kein @nestjs/*- / TypeORM-Import)
+│   │   ├── entities/
+│   │   ├── value-objects/
+│   │   ├── events/
+│   │   └── repositories/       # nur Interfaces
+│   └── infrastructure/         # TypeORM-Repo-Implementierungen, externe Adapter
+│       ├── repositories/
+│       └── persistence/        # TypeORM-Entities/Schemas, Migrations
+└── shared/                     # Base-Entity, Value-Objects, Guards, Filters, Pipes
+```
+
+**Regeln:**
+- **Repository-Pattern:** Interface in `domain/repositories/`, Implementierung in `infrastructure/repositories/`. Application/Domain kennen nur das Interface.
+- **Domain framework-frei:** keine `@nestjs/*`-, TypeORM- oder Express-Imports in `domain/`. Nur reines TypeScript + eigene Interfaces.
+- **Proportional, nicht über-engineered:** Struktur zeigt Architektur-Kompetenz, ohne die kleine App zu erschlagen. Bei trivialen Modulen (z.B. `events`-Gateway) reicht eine schlanke Ausprägung.
 
 ## 5. Datenmodell (Skizze)
 - `users` (id, email, password_hash, role, created_at)
