@@ -58,17 +58,11 @@ export class Request {
     if (this.requesterId !== userId) throw new NotRequestOwner();
   }
 
-  // TODO(Pascal): Das Herzstück der Status-Maschine — ca. 6 Zeilen:
-  //   1) Schaue in der TRANSITIONS-Tabelle nach, welche Ziel-Stati vom
-  //      AKTUELLEN Status (this.status) aus erlaubt sind:
-  //      const allowed = TRANSITIONS[this.status];
-  //   2) Wenn `next` NICHT in `allowed` enthalten ist (.includes!):
-  //      throw new InvalidStatusTransition();
-  //   3) Sonst: merke dir den alten Status, setze this.status = next,
-  //      und gib { from: <alter Status>, to: next } zurück.
   private transitionTo(next: RequestStatus): StatusChange {
+    const allowed = TRANSITIONS[this.status];
+    if (!allowed.includes(next)) throw new InvalidStatusTransition();
     const from = this.status;
-    this.status = next; // STUB: lässt aktuell ALLES durch — deine Aufgabe!
+    this.status = next;
     return { from, to: next };
   }
 
