@@ -20,7 +20,7 @@ export class RequestEventOrmEntity {
   @Column({ name: 'actor_id', type: 'uuid' })
   actorId!: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 32 })
   action!: AuditAction;
 
   @Column({
