@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { EventsModule } from './events/events.module';
 import { RequestsModule } from './requests/requests.module';
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
 import { RolesGuard } from './shared/guards/roles.guard';
@@ -27,6 +28,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     AuthModule,
     RequestsModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [

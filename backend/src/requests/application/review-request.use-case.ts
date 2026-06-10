@@ -71,6 +71,8 @@ export class ReviewRequestUseCase {
         change.from,
         change.to,
         user.sub,
+        request.requesterId,
+        request.title,
       ),
     );
     return request;

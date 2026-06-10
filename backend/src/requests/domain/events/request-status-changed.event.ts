@@ -1,6 +1,6 @@
 import { RequestStatus } from '../value-objects/request-status';
 
-/** domain event — emitted on every status change; phase 5 realtime hooks in here */
+/** domain event — emitted on every status change; the realtime gateway listens here */
 export class RequestStatusChangedEvent {
   static readonly eventName = 'request.status-changed';
 
@@ -9,5 +9,7 @@ export class RequestStatusChangedEvent {
     public readonly from: RequestStatus | null,
     public readonly to: RequestStatus,
     public readonly actorId: string,
+    public readonly requesterId: string,
+    public readonly title: string,
   ) {}
 }
